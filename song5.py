@@ -21,6 +21,15 @@ def preChorus():
 	b1.stopo
 	Clock.future(16, chorus)
 
+def chorus():
+	d3 >> play("X  x {O[0000]}  ")
+	d4 >> play("s  [sss]")
+	b3 >> jbass([5,6,7,2,6], dur=[4,4,4,2,2], oct=[4.4.4,5,4],shape=linvar([0.1,0.8],30), amp=0.25)
+	b4 >> jbass([5,6,7,2,6], dur=[4,4,4,2,2], oct=[4.4.4,5,4])
+	t3 >> blip([0,1,2,4] dur=1/4, pan=(-1,1), delay=(0.5, 0, 1, 0.25), amp=0.75, oct-(5,6,7,6), room=0.75, mix=0.5).sometimes("reverse").every(3,"stutter")
+	d5 >> play("a", sample=[1,2,3], dur=PDur(3,8,[0.2]), amp=0.5)
+	Clock.future (64, verse2)
+
 def verse2():
 	d3.stop()
 	d4.stop()
