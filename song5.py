@@ -1,3 +1,6 @@
+# Code from Tomas Cajelo
+# Taken from https://www.instagram.com/p/BzQe6qFnqzV/?utm_source=ig_web_copy_link
+
 Scale.default = "minor"
 Root.default.set("B")
 Clock.bpm=140
