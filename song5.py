@@ -1,6 +1,11 @@
 # Code from Tomas Cajelo
 # Taken from https://www.instagram.com/p/BzQe6qFnqzV/?utm_source=ig_web_copy_link
 
+
+Scale.default = "minor"
+Root.default.set("B")
+Clock.bpm=140
+
 def intro:
 	d2 >> play("--(--)-(----)--").sometimes("stutter")
 	p1 >> anbi([(0,2,4),(6,8,10),(4,6,8),(5,7,9)], dur=8, oct=(5,4,4,6), chop=12, root=2.5, mix=2.6)
