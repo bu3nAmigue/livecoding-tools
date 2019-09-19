@@ -12,7 +12,6 @@ def estribillo(duracion=1):
 def cierre(duracion=4):
     p4.stop()
     p3.stop()
-    #p5.stop()
     p1 >> blip(var([0,-1,1],[8,2,2]),oct=[3,4,3], dur=1/4, sus=1, amp=[1,1,1,1])
 
 total = 48

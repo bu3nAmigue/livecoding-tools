@@ -13,14 +13,10 @@ Scale.default = 'major'
 def intro(duracion = 1):
     d1 >> play('<-><  K ><x   >', dur=duracion, amp=2)
     b1 >> ambi(var([0,5,3,2],4), dur=duracion,sus=0.5, amp=[0,0.9],oct=5)
-intro()
-
 def verso(duracion = 1):
     chords = P[0,5,3,2]
     b1 >> ambi(var(chords,4),dur=[duracion],sus=1)
     d1 >> play("{x*xb}",dur=duracion/4,amp=0.5)
-verso()
-
 def estribillo(duracion=1):
     chords = P[0,5,4,2]
     b1 >> dbass(var(chords,1),dur=duracion/2, sus=1,oct=5)

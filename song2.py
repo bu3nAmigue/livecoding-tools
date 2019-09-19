@@ -1,11 +1,7 @@
 from .Extensions.VRender import vrender
 from .Extensions.Voice import voice
-def nextBarX(offset,total):
-    x = (int(Clock.now()/total)+1)*total - Clock.now()
-    if x - (total-offset) > 0:
-        return x - (total-offset)
-    else:
-        return x + offset
+def nextBarX(total):
+    return Clock.mod(total) - 0.1
 class Section():
     def __init__(self,play,dur):
         self.play = play
@@ -122,12 +118,11 @@ def a11():
 def a12():
     v3.stop()
 
-# MEjorar partes bruscas
+# Mejorar partes bruscas
 # Agregar bajo y mas cosas para momento culmine
 # Mejor bateria
 # Sincopas
 # Agregar algun detalle a la base
-
 # Cambiar bajo
 
 s0 = Section(a0,16)
