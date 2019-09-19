@@ -19,10 +19,13 @@ def verso(duracion = 1):
 def estribillo(duracion=1):
     chords = P[0,5,4,2]
     b1 >> dbass(var(chords,1),dur=duracion/2, sus=1,oct=5)
-    d1 >> play("<V([sV][{[--]-bb-b}])><#  b>",dur=duracion/2, sample=[1,2,3])
+    d1 >> play("<V([sV][{[--]-bb-b}])><#  b>",dur=duracion/2, sample=[1,2,3],amp=1.5)
 def cierre(duracion=4):
     d1 >> play('[bbbb] ',dur=duracion)
     b1 >> dbass([0], dur=duracion, sus=duracion,amp=0.6)
+
+# Arrancar de una con bateria
+# Corregir volumenes
 
 total = 48
 aviso_tiempo_previo = 32
@@ -48,5 +51,6 @@ proximo(verso, start + total*5,"verso")
 proximo(estribillo, start + total*6,"ultimo estribillo!!!")
 # CIERRE
 proximo(cierre, start + total*7,"cierre")
+
 
 
