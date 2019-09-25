@@ -90,7 +90,7 @@ def cierre(duracion=4):
     b1 >> dbass([0], dur=duracion, sus=duracion,amp=0.6)
 print(Clock.now()%16)
 # INICIAR CANCION
-total = 96
+total = 64
 aviso_tiempo_previo = 32
 def proximo(etapa,tiempo,nombre):
     Clock.schedule(lambda : print(f"faltan {aviso_tiempo_previo//4} beats para el {nombre}"),tiempo - aviso_tiempo_previo//4)
