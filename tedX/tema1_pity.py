@@ -17,6 +17,10 @@ v2 >> loop("v6",P[0:4],dur=1,amp=var([3,0],4),mix=0.8,room=0.8,formant=[0])
 #verso
 v3 >> loop("v2",P[0:16],dur=PSum(4,4),amp=var([1,0],8),formant=[1])
 #estribillo
+#el buen quin
+m2 >> quin(var(chords), oct=[4,5], dur=PDur(5,8), amp=1.5, hpf=linvar([300, 1000]), shape=0.5) + var([0,2,-1])
+m2.stop()
+
 v3 >> loop("v5",P[0:8],dur=PSum(1,1),amp=var([4],4),mix=0.9,room=0.9,formant=2)
 
 v2 >> loop("v1",P[0:16],dur=PSum(9,4),amp=var([4,0],4),mix=0.9,room=0.9,formant=linvar([0,0]))
