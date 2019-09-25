@@ -9,7 +9,6 @@ def proximo(etapa,tiempo,nombre):
     Clock.schedule(lambda : print(f"faltan {aviso_tiempo_previo} beats para el {nombre}"),tiempo - aviso_tiempo_previo)
     Clock.schedule(lambda : cambio_de_etapa(etapa), tiempo)
 
-
 Scale.default = "minor"
 Root.default.set("B")
 Clock.bpm=90
@@ -51,11 +50,11 @@ d1 >> play('o|*3|', sample=2, dur=2, amp=4)
 
 v1 >> charm(PWalk(5),amp=5,chop=2,scale=Scale.minorPentatonic)
 
-v2 >> loop("v1",P[0:16],mix=0.6,room=0.9,amp=var([0],[4]))
+v2 >> loop("v1",P[0:16],mix=0.6,room=0.9,amp=var([4],[4]))
 
-v1 >> loop("o1",P[0:8],mix=0.8,room=0.9,amp=var([12,0],[4]))
+v1 >> loop("o1",P[0:8],mix=0.8,room=0.9,amp=var([4,0],[4]))
 
-m1 >> blip(PWalk(4),dur=1,amp=10)
+m1 >> blip(PWalk(4),dur=1,amp=1)
 
 notas = (PWalk(4))[:20]
 voice(notas,dur=[1],lyrics="aa",file="o1",octave=6,scale=Scale.minorPentatonic)
