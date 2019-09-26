@@ -43,12 +43,12 @@ voice(notas,dur=[4]*20,lyrics="bien ve ni dos los amo",file="t1v2",octave=7,scal
 
 #stopChoir()
 
-playChoir([0,2,3,4],[4])
+b1 >> ambi([0,4,6,3,2],dur=4)
 
 v1.reload()
 v1 >> loop("t1v2",P[0:64],mix=0.9,room=0.9,amp=2,formant=6)
 
-b1 >> ambi([0,4,6,3,2],dur=4)
+playChoir([0],[4])
 
 v1 >> viola(PWalk(4),dur=[1,3],scale=Scale.minorPentatonic,amp=[0,1])
 

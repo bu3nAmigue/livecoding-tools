@@ -16,10 +16,6 @@ v1 >> loop("v6",P[0:16],amp=var([1],4))
 v2 >> loop("v6",P[0:4],dur=1,amp=var([3,0],4),mix=0.8,room=0.8,formant=[0])
 #verso
 v3 >> loop("v2",P[0:16],dur=PSum(4,4),amp=var([1,0],8),formant=[1])
-#estribillo
-#el buen quin
-m2 >> quin(var(chords), oct=[4,5], dur=PDur(5,8), amp=1.5, hpf=linvar([300, 1000]), shape=0.5) + var([0,2,-1])
-m2.stop()
 
 v3 >> loop("v5",P[0:8],dur=PSum(1,1),amp=var([4],4),mix=0.9,room=0.9,formant=2)
 
@@ -37,8 +33,13 @@ m2 >> piano(PWalk(4),dur=0.5,amp=1,scale=Scale.minorPentatonic)
 #m1.stop()
 #m2.stop()
 
-# estribillo
+#estribillo
 a1 >> gong(PWalk(4),dur=duracion/4,amp=4,scale=Scale.minorPentatonic, sus=duracion/2)
+
+#el buen quin
+m2 >> quin(var(chords), oct=[4,5], dur=PDur(5,8), amp=1.5, hpf=linvar([300, 1000]), shape=0.5) + var([0,2,-1])
+m2.stop()
+
 
 #cierre
 m1 >> piano(chords, dur=duracion, amp=[[1.5]*4+[0]*4]) + var([0,2,4])

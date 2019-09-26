@@ -48,7 +48,7 @@ y1 >> ambi(linvar([0,5],16), dur=1/8, cut=0, chop=0, room=0.6, mix=0.8, pan=linv
 
 d1 >> play('o|*3|', sample=2, dur=2, amp=4)
 
-v1 >> charm(PWalk(5),amp=5,chop=2,scale=Scale.minorPentatonic)
+v1 >> charm(PWalk(5),amp=2,chop=2,scale=Scale.minorPentatonic)
 
 v2 >> loop("v1",P[0:16],mix=0.6,room=0.9,amp=var([4],[4]))
 
@@ -65,11 +65,5 @@ Clock.schedule(intro, start)
 proximo(verse1, start + total*1,"verso1")
 proximo(verse2, start + total*2,"verso2")
 proximo(bridge, start + total*3,"puente")
-proximo(prechorus, start + total*4,"pre-estribillo")
-proximo(chorus, start + total*5,"estribillo")
-proximo(intro, start + total*6,"intro")
-proximo(verse1, start + total*7,"verso1")
-proximo(verse2, start + total*8,"verso2")
-proximo(bridge, start + total*9,"puente")
-proximo(prechorus, start + total*10,"pre-estribillo")
-proximo(chorus, start + total*11,"estribillo")
+proximo(prechorus, start + total*3.5,"pre-estribillo")
+proximo(chorus, start + total*4.5,"estribillo")
