@@ -1,5 +1,8 @@
-from .Extensions.Voice import voice
+#from .Extensions.Voice import voice
 
+
+Clock.bpm = 120
+Scale.default=Scale.minor
 def incrementar(notas,inc):
     return list(map(lambda x: x+inc,notas))
 def length(chords,dur):
@@ -33,27 +36,24 @@ def stopChoir():
     c3.stop()
 
 # Generate voices
-choirProgression([0,2,3,4],dur=[4], letra="tedex san isi dro")
+#choirProgression([0,2,3,4],dur=[4], letra="la",octave=5)
 
-notas = (PWalk(4))[:20]
-voice(notas,dur=[4]*20,lyrics="bien ve ni dos los amo",file="t1v2",octave=7,scale=Scale.minorPentatonic)
-
+#notas = (PWalk(4))[:20]
+#voice(notas,dur=([2]*8),lyrics="bien ve ni dos gracias por ve nir",file="t1v2",octave=6,scale=Scale.minorPentatonic)
 
 # Play music
 
 #stopChoir()
 
-b1 >> ambi([0,4,6,3,2],dur=4)
+start = Clock.mod(16) - 0.1
+Clock.schedule(lambda : playChoir([0],[16],amp=2), start)
 
-v1.reload()
-v1 >> loop("t1v2",P[0:64],mix=0.9,room=0.9,amp=2,formant=6)
-
-playChoir([0],[4])
-
-v1 >> viola(PWalk(4),dur=[1,3],scale=Scale.minorPentatonic,amp=[0,1])
+v1 >> loop("t1v2",P[0:16],dur=PSum(4,4),mix=0.1,room=0.0,amp=4,formant=0)
 
 b2 >> bass(dur=4,chop=3,sus=3)
-
-d2 >> play("-")
-
+d2 >> play("b")
 d1 >> play("X   ",sample=4)
+
+v2 >> viola(PWalk(4),dur=[4],sus=2,scale=Scale.minorPentatonic,amp=[1])
+
+

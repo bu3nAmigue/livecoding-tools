@@ -1,3 +1,16 @@
+#from .Extensions.Voice import voice
+#notas = (PWalk(4))[:20]
+#voice(notas,dur=[1],lyrics="aa",file="o1",octave=6,scale=Scale.minorPentatonic)
+
+#notas = PWalk(3)[:18]
+#voice(notas,dur=[2],lyrics="ab ra cada bra ",file="t3v2",octave=5,scale=Scale.minorPentatonic)
+
+#notas = PWalk(3)[:18]
+#voice(notas,dur=[2],lyrics="live coding",file="t3v3",octave=5,scale=Scale.minorPentatonic,lang="en")
+
+#notas = PWalk(3)[:18]
+#voice(notas,dur=[2],lyrics="colec tivo delaiv coders",file="t3v4",octave=5,scale=Scale.minorPentatonic)
+
 def cambio_de_etapa(f):
     f()
     print("CAMBIO DE PARTE")    
@@ -8,7 +21,6 @@ def proximo(etapa,tiempo,nombre):
     Clock.schedule(lambda : print(f"faltan {aviso_tiempo_previo//2} beats para el {nombre}"),tiempo - aviso_tiempo_previo//2)
     Clock.schedule(lambda : print(f"faltan {aviso_tiempo_previo} beats para el {nombre}"),tiempo - aviso_tiempo_previo)
     Clock.schedule(lambda : cambio_de_etapa(etapa), tiempo)
-
 Scale.default = "minor"
 Root.default.set("B")
 Clock.bpm=90
@@ -34,9 +46,10 @@ def chorus():
     b1.reset()
     b1 >> bass(var([0,-1],[8,2]),dur=4,chop=var([8,16],5),amp=1.3, pan=[1,-1])
 
+v1.reload()
+v1 >> loop("t3v3",P[0:16],amp=var([4],4),mix=0.0,room=0.0)
 
 # Instrumentis
-
 # bajo del coro con shape
 b1 >> bass(var([0,-1],[8,2]),dur=4,chop=var([8,16],5),amp=1.3, pan=[1,-1], shape=0.2)
 
@@ -50,15 +63,11 @@ d1 >> play('o|*3|', sample=2, dur=2, amp=4)
 
 v1 >> charm(PWalk(5),amp=2,chop=2,scale=Scale.minorPentatonic)
 
-v2 >> loop("v1",P[0:16],mix=0.6,room=0.9,amp=var([4],[4]))
+v2 >> loop("t3v1",P[0:16],mix=0.9,room=0.9,amp=var([4],[4]))
 
 v1 >> loop("o1",P[0:8],mix=0.8,room=0.9,amp=var([4,0],[4]))
 
 m1 >> blip(PWalk(4),dur=1,amp=1)
-
-notas = (PWalk(4))[:20]
-voice(notas,dur=[1],lyrics="aa",file="o1",octave=6,scale=Scale.minorPentatonic)
-
 
 start = Clock.mod(16) - 0.1
 Clock.schedule(intro, start)

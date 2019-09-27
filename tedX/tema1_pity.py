@@ -1,25 +1,42 @@
-from .Extensions.Voice import voice
 
 #########
 # UTILS
-notas = (PWalk(4))[:20]
-voice(notas,dur=[1],lyrics=letra5 + letra6 + letra7 + letra8,file="v6",octave=6,scale=Scale.minorPentatonic)
+#from .Extensions.Voice import voice
 
-chords = [0,2,3,4]
-duracion = 4
+#letra1 = "música con computa doras "
+#letra2 = "progra mando melo días "
+#letra3 = "to dos los días "
+#letra4 = "co deo en vivo "
+
+#notas = (PWalk(10))[:20]
+#voice(notas,dur=[1],lyrics=letra1+letra2+letra3+letra4,file="t2v2",octave=5,scale=Scale.minorPentatonic)
+
+#letra1 = "on the flight programming "
+#letra2 = "just in time programming "
+
+#notas = (PWalk(5))[:10]
+#notas = [0,5,4,2]
+#voice(notas,dur=[1],lyrics="la",file="t2v7",octave=6,scale=Scale.minor)
+
+stopChoir()
+d2.stop()
+b2.chop=0
+b2.sus=0
+
 
 # VOCES
-#utils
-v1.reload()
-v1 >> loop("v6",P[0:16],amp=var([1],4))
 #intro
-v2 >> loop("v6",P[0:4],dur=1,amp=var([3,0],4),mix=0.8,room=0.8,formant=[0])
+v2 >> loop("t2v2",P[0:4],dur=1,amp=var([3,0],4),mix=0.8,room=0.8,formant=[0])
+
 #verso
-v3 >> loop("v2",P[0:16],dur=PSum(4,4),amp=var([1,0],8),formant=[1])
+v3 >> loop("t2v2",P[0:16],dur=PSum(4,4),amp=var([1],8),formant=[1])
 
-v3 >> loop("v5",P[0:8],dur=PSum(1,1),amp=var([4],4),mix=0.9,room=0.9,formant=2)
+#estribillo
+v2 >> loop("t2v7",P[0:8],dur=PSum(1,1),amp=var([4],4),mix=0.9,room=0.9,formant=2)
 
-v2 >> loop("v1",P[0:16],dur=PSum(9,4),amp=var([4,0],4),mix=0.9,room=0.9,formant=linvar([0,0]))
+v3 >> loop("t2v5",P[0:16],dur=PSum(9,4),amp=var([4,0],4),mix=0.9,room=0.9,formant=linvar([0,0]))
+
+
 #vx.stop()
 
 #INSTRUMENTIS
@@ -27,6 +44,9 @@ v2 >> loop("v1",P[0:16],dur=PSum(9,4),amp=var([4,0],4),mix=0.9,room=0.9,formant=
 #intro
 ps >> saw([0,2], dur=4, sus=3, oct=(5))
 #verso
+chords = [0,2,3,4]
+duracion = 4
+
 m1 >> gong(P+[chords]|P[chords],dur=[duracion/2]*4+[duracion/4]*4, amp=4, oct=(4,[5,6])).every(4,'shuffle').every(2, 'offadd',-1) + var([(0,2,4,6),1])
 
 m2 >> piano(PWalk(4),dur=0.5,amp=1,scale=Scale.minorPentatonic)
@@ -39,7 +59,6 @@ a1 >> gong(PWalk(4),dur=duracion/4,amp=4,scale=Scale.minorPentatonic, sus=duraci
 #el buen quin
 m2 >> quin(var(chords), oct=[4,5], dur=PDur(5,8), amp=1.5, hpf=linvar([300, 1000]), shape=0.5) + var([0,2,-1])
 m2.stop()
-
 
 #cierre
 m1 >> piano(chords, dur=duracion, amp=[[1.5]*4+[0]*4]) + var([0,2,4])
@@ -57,22 +76,12 @@ def cambio_de_etapa(f):
     d1.reset()
     m1.reset()
     b1.reset()
+    b2.reset()
     v1.reset()
     v1.stop()
     m1.stop()
     f()
     print("CAMBIO DE PARTE")
-letra1 = "música con computa doras "
-letra2 = "progra mando melo días "
-letra3 = "to dos los días "
-letra4 = "co deo en vivo "
-letra5 = "scriptear es vi da "
-letra6 = "on the flight programming "
-letra7 = "just in time programming "
-letra8 = "and conversational programming "
-letra9 = "programmers programming programs "
-letra10 = "live coders expose and rewire the innards of software while it generates improvised music and visuals "
-letra11 = "música por computa doras "
 Scale.default = 'minor'
 Clock.bpm = 90
 def intro(duracion = 1):
@@ -89,8 +98,6 @@ def estribillo(duracion=1):
 def cierre(duracion=4):
     d1 >> play('[bbbb] ',dur=duracion)
     b1 >> dbass([0], dur=duracion, sus=duracion,amp=0.6)
-print(Clock.now()%16)
-# INICIAR CANCION
 total = 64
 aviso_tiempo_previo = 32
 def proximo(etapa,tiempo,nombre):
@@ -99,10 +106,9 @@ def proximo(etapa,tiempo,nombre):
     Clock.schedule(lambda : print(f"faltan {aviso_tiempo_previo} beats para el {nombre}"),tiempo - aviso_tiempo_previo)
     Clock.schedule(lambda : cambio_de_etapa(etapa), tiempo)
     
-
 #BOTON DE ENCENDIDO
 start = Clock.mod(16) - 0.1
-Clock.schedule(intro, start + total*0)
+proximo(intro, start + total*0,"intro")
 # VERSO
 proximo(verso, start + total*1,"verso")
 # ESTRIBILLO
@@ -113,3 +119,6 @@ proximo(verso, start + total*3,"verso")
 proximo(estribillo, start + total*4,"ultimo estribillo!!!")
 # CIERRE
 proximo(cierre, start + total*5,"cierre")
+
+
+
