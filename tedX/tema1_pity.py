@@ -1,4 +1,3 @@
-
 #########
 # UTILS
 #from .Extensions.Voice import voice
@@ -12,7 +11,7 @@
 #voice(notas,dur=[1],lyrics=letra1+letra2+letra3+letra4,file="t2v2",octave=5,scale=Scale.minorPentatonic)
 
 #letra1 = "on the flight programming "
-#letra2 = "just in time programming "
+#letra2 = "just in time programming ",
 
 #notas = (PWalk(5))[:10]
 #notas = [0,5,4,2]
@@ -23,18 +22,17 @@ d2.stop()
 b2.chop=0
 b2.sus=0
 
-
 # VOCES
 #intro
-v2 >> loop("t2v2",P[0:4],dur=1,amp=var([3,0],4),mix=0.8,room=0.8,formant=[0])
+v2 >> loop("t2v2",P[0:4],dur=1,amp=var([2,0],4),mix=0.8,room=0.8,formant=[0])
 
 #verso
 v3 >> loop("t2v2",P[0:16],dur=PSum(4,4),amp=var([1],8),formant=[1])
 
 #estribillo
-v2 >> loop("t2v7",P[0:8],dur=PSum(1,1),amp=var([4],4),mix=0.9,room=0.9,formant=2)
+v2 >> loop("t2v7",P[0:8],dur=PSum(1,1),amp=var([1],4),mix=0.9,room=0.9,formant=2)
 
-v3 >> loop("t2v5",P[0:16],dur=PSum(9,4),amp=var([4,0],4),mix=0.9,room=0.9,formant=linvar([0,0]))
+v3 >> loop("t2v5",P[0:16],dur=PSum(9,4),amp=var([1,0],4),mix=0.9,room=0.9,formant=linvar([0,0]))
 
 
 #vx.stop()
@@ -43,18 +41,19 @@ v3 >> loop("t2v5",P[0:16],dur=PSum(9,4),amp=var([4,0],4),mix=0.9,room=0.9,forman
 
 #intro
 ps >> saw([0,2], dur=4, sus=3, oct=(5))
+
 #verso
 chords = [0,2,3,4]
 duracion = 4
 
-m1 >> gong(P+[chords]|P[chords],dur=[duracion/2]*4+[duracion/4]*4, amp=4, oct=(4,[5,6])).every(4,'shuffle').every(2, 'offadd',-1) + var([(0,2,4,6),1])
+m1 >> gong(P+[chords]|P[chords],dur=[duracion/2]*4+[duracion/4]*4, amp=1, oct=(4,[5,6])).every(4,'shuffle').every(2, 'offadd',-1) + var([(0,2,4,6),1])
 
 m2 >> piano(PWalk(4),dur=0.5,amp=1,scale=Scale.minorPentatonic)
 #m1.stop()
 #m2.stop()
 
 #estribillo
-a1 >> gong(PWalk(4),dur=duracion/4,amp=4,scale=Scale.minorPentatonic, sus=duracion/2)
+a1 >> gong(PWalk(4),dur=duracion/4,amp=2,scale=Scale.minorPentatonic, sus=duracion/2)
 
 #el buen quin
 m2 >> quin(var(chords), oct=[4,5], dur=PDur(5,8), amp=1.5, hpf=linvar([300, 1000]), shape=0.5) + var([0,2,-1])
@@ -72,6 +71,14 @@ m1 >> piano(chords, dur=duracion, amp=[[1.5]*4+[0]*4]) + var([0,2,4])
 
 # AGREGAR SAMPLE DE EXPLOSION
 
+verso()
+
+intro()
+
+estribillo()
+
+cierre()
+
 def cambio_de_etapa(f):
     d1.reset()
     m1.reset()
@@ -85,8 +92,8 @@ def cambio_de_etapa(f):
 Scale.default = 'minor'
 Clock.bpm = 90
 def intro(duracion = 1):
-    d1 >> play('<-><  K ><Xs  >', dur=duracion, amp=2)
-    b1 >> dbass(var([0,2,3,4],4), dur=duracion,sus=0.5, amp=[0.9],oct=5)
+    d1 >> play('<-><  K ><Xs  >', dur=duracion, amp=1)
+    b1 >> dbass(var([0,2,3,4],4), dur=duracion,sus=0.5, amp=[0.6],oct=5)
 def verso(duracion = 1):
     chords = P[0,2,3,4]
     b1 >> dbass(var(chords,4),dur=[duracion],sus=1)
@@ -119,6 +126,3 @@ proximo(verso, start + total*3,"verso")
 proximo(estribillo, start + total*4,"ultimo estribillo!!!")
 # CIERRE
 proximo(cierre, start + total*5,"cierre")
-
-
-

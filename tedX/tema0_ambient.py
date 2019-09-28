@@ -17,7 +17,7 @@ def choirProgression(chords,letra="la",dur=[1],model=None,octave=5):
         voice(chords,lyrics=letra,dur=dur,file='c1',octave=octave,model=model)
         voice(incrementar(chords,2),lyrics=letra,dur=dur,file='c2',octave=octave,model=model)
         voice(incrementar(chords,4),lyrics=letra,dur=dur,file='c3',octave=octave,model=model)
-def playChoir(chords,dur,reverb=True,amp=3):
+def playChoir(chords,dur,reverb=True,amp=1):
     if reverb:
         mix=0.9
         room=0.9
@@ -46,14 +46,12 @@ def stopChoir():
 #stopChoir()
 
 start = Clock.mod(16) - 0.1
-Clock.schedule(lambda : playChoir([0],[16],amp=2), start)
+Clock.schedule(lambda : playChoir([0],[16],amp=1), start)
 
-v1 >> loop("t1v2",P[0:16],dur=PSum(4,4),mix=0.1,room=0.0,amp=4,formant=0)
+v1 >> loop("t1v2",P[0:16],dur=PSum(4,4),mix=0.1,room=0.0,amp=1,formant=0)
 
-b2 >> bass(dur=4,chop=3,sus=3)
-d2 >> play("b")
-d1 >> play("X   ",sample=4)
+b2 >> bass(dur=4,chop=3,sus=3, amp=0.6)
+d2 >> play("b", amp=0.6)
+d1 >> play("X   ",sample=4, amp=1)
 
 v2 >> viola(PWalk(4),dur=[4],sus=2,scale=Scale.minorPentatonic,amp=[1])
-
-
