@@ -58,7 +58,6 @@ prechorus()
 
 chorus()
 
-v1.reload()
 v1 >> loop("t3v3",P[0:16],amp=var([1.5],4),mix=0.0,room=0.0)
 
 # Instrumentis
