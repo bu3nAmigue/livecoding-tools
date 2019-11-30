@@ -6,28 +6,30 @@ Vos lo sabes 1 1 2
 Vos lo sabes 1 1 2
 
 Al escribir tu primer disco
-No te confies si te dicen que es faacil
+No te confies
+Nadie dijo que es faacil
 No lo es
 
-Hoy estas re motivado
-Las lineas salen solas
-Pero al otro dia no sale ni una palaabra
+Estribillo A
 
-Quiero codear en vivo
-Mi disco
-Mi disco
+Por que hoy estas re motivado
+Pero al otro dia nada aanda
+Queres codear tu disco
+Y Troop no arranca
 
+Estribillo B
 
+Porque hoy estas re motivado
+Pero al otro dia todo faallaa
+Queres codear tu disco
+Y los samples estallan
 
+Estribillo C
 
-
-
-
-
-
-Escribirlo todo
-Publicarlo todo
-
+Porque hoy estas re motivado
+Pero al otro dia nada arrancaa
+Queres codear tu disco
+Y el parche te mata
 
 
 
