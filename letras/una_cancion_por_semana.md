@@ -6,8 +6,7 @@ Vos lo sabes 1 1 2
 Vos lo sabes 1 1 2
 
 Al escribir tu primer disco
-No te confies
-Nadie dijo que es faacil
+No te confies porque nadie dijo que es faacil
 No lo es
 
 Estribillo A
