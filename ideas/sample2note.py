@@ -2,19 +2,22 @@ def note2index(note):
     scale = list(Scale.default)
     return scale[note]
 
-def sample2notes(notas,sample="b",dur=1,oct=0):
+def sample2notes(notas,sample="b",dur=1,oct=0,player=p1):
     rates = []
     for nota in notas:
         nota = note2index(nota)
         rates.append(math.pow(2,(nota+12*oct)/12))
-    p1 >> loop(sample,dur=var(dur,4), rate=var(rates,dur),amp=1)
+    player >> loop(sample,dur=var(dur,4), rate=var(rates,dur),amp=1)
 
-def play2notes(notas,sample="b",dur=1,ritmo=8,oct=0):
+def play2notes(notas,sample="b",dur=1,ritmo=8,oct=0,player=p1):
     rates = []
     for nota in notas:
         nota = note2index(nota)
         rates.append(math.pow(2,(nota+12*oct)/12))
-    p2 >> play(sample,dur=var(ritmo,dur), rate=var(rates,dur),amp=0.5,sample=2)
+    player >> play(sample,dur=var(ritmo,dur), rate=var(rates,dur),amp=0.5,sample=2)
+
+
+
 
 sample2notes([0,5,4,2],"w",1)
 
