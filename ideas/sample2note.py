@@ -4,14 +4,14 @@ def note2index(note):
 
 def sample2notes(notas,sample="b",dur=1,oct=0,player=p1):
     rates = []
-    for nota in notas:
+    for nota in list(notas):
         nota = note2index(nota)
         rates.append(math.pow(2,(nota+12*oct)/12))
     player >> loop(sample,dur=var(dur,4), rate=var(rates,dur),amp=1)
 
 def play2notes(notas,sample="b",dur=1,ritmo=8,oct=0,player=p1):
     rates = []
-    for nota in notas:
+    for nota in list(notas):
         nota = note2index(nota)
         rates.append(math.pow(2,(nota+12*oct)/12))
     player >> play(sample,dur=var(ritmo,dur), rate=var(rates,dur),amp=0.5,sample=2)
