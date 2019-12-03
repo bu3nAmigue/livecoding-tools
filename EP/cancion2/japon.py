@@ -2,6 +2,9 @@
 # TEMA ESTRUCTURADO #
 #####################
 
+Clock.bpm=90
+Scale.default='majorPentatonic'
+Root.default=0
 
 ## CODIGO ##
 ##### Abajo arriba
@@ -10,7 +13,7 @@ def abajo():
     d_all.solo()
 def arriba():
     d_all.lpf=0
-    d_all.solo(
+    d_all.solo()
 def abajoarriba(intervalo):
     abajo()
     Clock.future(intervalo, lambda: arriba())
@@ -70,12 +73,19 @@ def puente():
 def estribillo():
     arriba()
     m1.stop()
-    s3.reset() >> karp(variaciones('=+===+==-=-=====',raiz=0), cut=0, amp=2, dur=[1/2], drive=0, glide=1.5, glidedelay=0.9, oct=(6)).every(3, 'offadd',4)
+    s3.reset() >> karp(P[0,0,PRand(2),PRand(2),4,2,3,4], cut=0, amp=1, dur=[1/2], drive=0.5, glide=0,glidedelay=0.8, oct=var([6],4), echo=0, cutoff=0.2).every(4,'stutter',3,dur=0.75,oct=s3.oct+1)
 def puente2():
-    abajo()
-
+    abajo()    
 estribillo()
 
+
+
+puente()
+
+
+batas()
+
+d2 >> play('X  |o2|X |o2| ', dur=1/4, sample=3)
 
 start = Clock.mod(32) - 0.1
 Clock.schedule(intro, start)
