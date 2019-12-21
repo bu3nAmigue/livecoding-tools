@@ -53,21 +53,63 @@ def verso1():
     m2.stop()
     play2notes([0],"Q",dur=[4],ritmo=[4],oct=-2,player=q1)
 def verso2():
-    v2 >> loop("o1",P[2:6], lpf=0, rate=[2,0.5], drive=0.3, echo=0, amp=var([0.5,0],4),dur=var([2,4,1],4))
+    pass
 def verso3():
+    v2 >> loop("o1",P[2:6], lpf=0, rate=[2,0.5], drive=0.3, echo=0, amp=var([0.5,0],4),dur=var([2,4,1],4))
     p1 >> piano(var([0,2],4), drive=0.3, dur=PSum(7,4),amp=0.7,pan=PWhite(-1,1)).every(4,'stutter',2,dur=1) + var([0,2],8)
 def puenteA1():
     d2.solo()
     d3 >> play('---[--]',sample=2,dur=0.5,amp=1)
-    a1 >> glass(oct=4)
+    c1 >> glass([0],oct=4)
 def puenteA2():
     y1 >> ambi(linvar([0,5],16), dur=1/8, cut=0, chop=0, room=0.6, mix=0.8, pan=linvar([-1,1]), amp=linvar([1,1.5,1.5,1]))
 def cierre1():
     pass
 def cierre2():
-    pass
+    Clock.clear()
+
+verso1()
+
+def suma(v,n):
+    return [note2index((a + n)%7) for a in v]
+
+def arreglo_coral(notas,sample,dur=1,d=0,h=1):
+    x1 >> loop(sample, P[d:h], pshift=var(suma(notas,0),dur))
+    x2 >> loop(sample, P[d:h], pshift=var(suma(notas,2),dur), delay=0)
+    x3 >> loop(sample, P[d:h], pshift=var(suma(notas,4),dur), delay=0)
+    
+print(note2index(5))
+
+print(Scale.minor)
+
+Scale.default='minor'
+arreglo_coral([0,5,4,2],"perro_tuned")
+
+v1 >> loop('perro_tuned', P[0:1], dur=1,rate=1,formant=0, pshift=[0,1,2,3,4,3,2,1], slide=0.0)
+
+v2 >> loop('perro_tuned', P[0:1], dur=1,rate=1,formant=0, pshift=[1,0,1,2,3,4,3,2], delay=0.0)
+
+v2.stop()
+
+v2 >> loop('c2', P[0:16], dur=1,rate=2,formant=2)
+
+v3 >> loop('c1', P[0:16], dur=1,rate=2,formant=2)
+
+v4 >> loop('t1v1', P[0:16], dur=1,rate=1,formant=0)
+
+
+
+puenteA1()
+
+print(SynthDefs)
+
+a1.reset() >> glass([0],oct=4)
+
+
 
 play2notes([0],"1234",dur=[4],ritmo=[2],oct=-1,player=p3)
+
+a4 >> pluck()
 
 abajo()
 
@@ -89,7 +131,6 @@ d1 >> play('(X )', sample=6,dur=0.5)
 cc >> combs(linvar([0,2],8), amp=0.1, room=0.5).spread()
 
 m2 >> gong(var([p2.pitch],4), dur=1/4, pan=linvar([-1,1],4), amp=linvar([0,2],8)).sometimes('stutter', 4)
-
 
 ### CANCION ###
 
