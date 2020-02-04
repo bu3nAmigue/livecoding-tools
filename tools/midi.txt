@@ -1,0 +1,25 @@
+aconnect -i -o -l
+
+# fluidsynth
+
+fluidsynth -a alsa -g 3 FluidR3_GM.sf2
+aconnect 20:0 128:0
+
+
+# yoshimi
+
+yoshimi --alsa-midi=16:0
+
+
+yoshimi --alsa-midi=16:0 -b 1024 --alsa-audio=hw:2,0
+
+
+# Foxdot / Supercollider
+
+FoxDot.start
+
+FoxDot.midi
+	
+m = MIDIOut(0);  // Linux users: MIDIOut(0, MIDIClient.destinations[0].uid)
+m.noteOn(16, 60, 60);
+m.allNotesOff(16);

@@ -308,6 +308,12 @@ class Interface(BasicInterface):
 
             self.lang = DummyInterpreter()
 
+        except Exception as e:
+
+            self.kill()
+
+            raise(e)
+
         # Set the window focus
         self.text.focus_force()
 
@@ -380,10 +386,10 @@ class Interface(BasicInterface):
 
         return
 
-    def add_new_user(self, user_id, name):
+    def add_new_user(self, user_id, name, is_dummy=False):
         """ Initialises a new Peer object """
 
-        peer = self.client.peers[user_id] = Peer(user_id, name, self.text)
+        peer = self.client.peers[user_id] = Peer(user_id, name, is_dummy, self.text)
 
         # Create a bar on the graph
         peer.graph = self.graphs.create_rectangle(0,0,0,0, fill=peer.bg)
@@ -394,10 +400,10 @@ class Interface(BasicInterface):
 
         return peer
 
-    def reconnect_user(self, user_id, name):
+    def reconnect_user(self, user_id, name, is_dummy=False):
         """ Re-adds a disconnected user to the interface """
         peer = self.client.peers[user_id]
-        peer.reconnect(name)
+        peer.reconnect(name, is_dummy)
         peer.move(0)
         return peer
 

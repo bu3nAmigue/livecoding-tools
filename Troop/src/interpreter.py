@@ -8,6 +8,7 @@
 """
 from __future__ import absolute_import
 from .config import *
+from .message import MSG_CONSOLE
 
 from subprocess import Popen
 from subprocess import PIPE, STDOUT
@@ -33,7 +34,7 @@ import time
 import threading
 import shlex
 import tempfile
-import os.path
+import os, os.path
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S.%f"
 
@@ -50,11 +51,26 @@ def colour_format(text, colour):
 ## dummy interpreter
 
 class DummyInterpreter:
+    name = None
     def __init__(self, *args, **kwargs):
         self.re={}
+        
+        self.syntax_lang = langtypes[kwargs.get("syntax", -1)]
+
+        # If using another snytax, use the appropriate regex
+
+        if self.syntax_lang != self.__class__:
+        
+            self.re = {"tag_bold": self.syntax_lang.find_keyword, "tag_italic": self.syntax_lang.find_comment}
+
+            self.syntax_lang.setup()
+
+        else:
+
+            self.syntax_lang = None
 
     def __repr__(self):
-        return repr(self.__class__.__name__)
+        return self.name if name is not None else repr(self.__class__.__name__)
 
     def get_block_of_code(self, text, index):
         """ Returns the start and end line numbers of the text to evaluate when pressing Ctrl+Return. """
@@ -114,10 +130,18 @@ class DummyInterpreter:
                 sys.stdout.write(colour_format("." * n, colour) + _ + string[i])
                 sys.stdout.flush()
         return
-    
+
+    # Syntax highlighting methods
+
+    def find_keyword(self, string):
+        return self.syntax_lang.find_keyword(string)
+
+    def find_comment(self, string):
+        return self.syntax_lang.find_comment(string)
+
     def stop_sound(self):
         """ Returns the string for stopping all sound in a language """
-        return ""
+        return self.syntax_lang.stop_sound() if self.syntax_lang != None else ""
     
     @staticmethod
     def format(string):
@@ -125,15 +149,20 @@ class DummyInterpreter:
         return str(string) + "\n"
     
 class Interpreter(DummyInterpreter):
+    id       = 99
     lang     = None
     clock    = None
-    bootstrap = None
+    boot_file = None
     keyword_regex = compile_regex([])
     comment_regex = compile_regex([])
     stdout   = None
     stdout_thread = None
     filetype = ".txt"
-    def __init__(self, path, args=""):
+    client   = None
+
+    def __init__(self, client, path, args=""):
+
+        self.client = client
 
         self.re = {"tag_bold": self.find_keyword, "tag_italic": self.find_comment}
 
@@ -180,26 +209,67 @@ class Interpreter(DummyInterpreter):
 
             raise ExecutableNotFoundError(self.get_path_as_string())
 
-        # Load bootfile
-
-        if self.bootstrap is not None:
-
-            for line in self.bootstrap.split("\n"):
-
-                self.lang.stdin.write(line.rstrip() + "\n")
-                self.lang.stdin.flush()
+        self.load_bootfile()
 
         return self
+
+    def load_bootfile(self):
+        """ 
+        Loads the specified boot file. If it exists, it is defined
+        in the class but can be overridden in conf/boot.txt.
+        """
+
+        self.boot_file = self.get_custom_bootfile()
+
+        # Load data
+        if self.boot_file is not None:
+
+            with open(self.boot_file) as f:
+
+                for line in f.split("\n"):
+
+                    self.lang.stdin.write(line.rstrip() + "\n")
+                    self.lang.stdin.flush()
+
+        return
+
+    def get_custom_bootfile(self):
+        """
+        Get the path of a specific custom bootfile or None if it
+        does not exist.
+        """
+
+        # Check boot file for overload
+
+        if self.name is not None and os.path.exists(BOOT_CONFIG_FILE):
+
+            with open(BOOT_CONFIG_FILE) as f:
+
+                for line in f.readlines():
+
+                    if line.startswith(self.name):
+
+                        data = line.split("=")
+
+                        path = data[-1].strip()
+
+                        if path not in ("''", '""'):
+
+                            return path
+
+        return None
 
     def get_path_as_string(self):
         """ Returns the executable input as a string """
         return " ".join(self.path)
 
-    def find_keyword(self, string):
-        return [(match.start(), match.end()) for match in self.keyword_regex.finditer(string)]
+    @classmethod
+    def find_keyword(cls, string):
+        return [(match.start(), match.end()) for match in cls.keyword_regex.finditer(string)]
 
-    def find_comment(self, string):
-        return [(match.start(), match.end()) for match in self.comment_regex.finditer(string)]
+    @classmethod
+    def find_comment(cls, string):
+        return [(match.start(), match.end()) for match in cls.comment_regex.finditer(string)]
 
     def write_stdout(self, string):
         if self.is_alive:
@@ -227,10 +297,24 @@ class Interpreter(DummyInterpreter):
                 # Check contents of file
                 # TODO -- get control of f_out and stdout
                 self.f_out.seek(0)
+                
+                message = []
+                
                 for stdout_line in iter(self.f_out.readline, ""):
-                    sys.stdout.write(stdout_line.rstrip())                
+                
+                    line = stdout_line.rstrip()
+                    sys.stdout.write(line)
+                    message.append(line)
+                
                 # clear tmpfile
                 self.f_out.truncate(0)
+
+                # Send console contents to the server
+
+                if len(message) > 0 and self.client.is_master():
+                    
+                    self.client.send(MSG_CONSOLE(self.client.id, "\n".join(message)))
+
                 time.sleep(0.05)
             except ValueError as e:
                 print(e)
@@ -252,19 +336,18 @@ class CustomInterpreter:
         return Interpreter(*self.args, **self.kwargs)
 
 class BuiltinInterpreter(Interpreter):
-    def __init__(self, args):
-        Interpreter.__init__(self, self.path, args)
+    def __init__(self, client, args):   
+        Interpreter.__init__(self, client, self.path, args)
 
 class FoxDotInterpreter(BuiltinInterpreter):
     filetype=".py"
     path = "{} -u -m FoxDot --pipe".format(PYTHON_EXECUTABLE)
+    name = "FoxDot"
 
-    def setup(self):
-        self.keywords = ["Clock", "Scale", "Root", "var", "linvar", '>>']
-        self.keyword_regex = compile_regex(self.keywords)
-
-    def __repr__(self):
-        return "FoxDot"
+    @classmethod
+    def setup(cls):
+        cls.keywords = ["Clock", "Scale", "Root", "var", "linvar", '>>', 'print']
+        cls.keyword_regex = compile_regex(cls.keywords)
 
     @staticmethod
     def format(string):
@@ -292,36 +375,63 @@ class FoxDotInterpreter(BuiltinInterpreter):
         Interpreter.kill(self)
         return
 
-    def stop_sound(self):
+    @classmethod
+    def stop_sound(cls):
         return "Clock.clear()"
 
 class TidalInterpreter(BuiltinInterpreter):
     path = 'ghci'
     filetype = ".tidal"
-
+    name = "TidalCycles"
+    
     def start(self):
 
-        # Import boot up code
+        # Use ghc-pkg to find location of boot-tidal
 
-        from .boot.tidal import bootstrap
+        try:
 
-        self.bootstrap = bootstrap
+            process = Popen(["ghc-pkg", "field", "tidal", "data-dir"], stdout=PIPE, universal_newlines=True)
+
+            output = process.communicate()[0]
+
+            data_dir = output.split("\n")[0].replace("data-dir:", "").strip()
+
+            self.boot_file = os.path.join(data_dir, "BootTidal.hs")
+
+        except FileNotFoundError:
+
+            # Set to None - might be defined in bootup file
+
+            self.boot_file = None
 
         Interpreter.start(self)
-
-        # Set any keywords e.g. d1 and $
-
-        self.keywords  = ["d{}".format(n) for n in range(1,17)] # update
-        self.keywords.extend( ["\$", "#", "hush"] )
-
-        self.keyword_regex = compile_regex(self.keywords)
-
-        # threading.Thread(target=self.stdout).start()
         
         return self
 
-    def __repr__(self):
-        return "TidalCycles"
+    def load_bootfile(self):
+        """
+        Overload for Tidal to use :script /path/to/file
+        instead of loading each line of a boot file one by
+        one
+        """
+        self.boot_file = (self.get_custom_bootfile() or self.boot_file)
+
+        if self.boot_file:
+
+            self.write_stdout(":script {}".format(self.boot_file))
+
+        else:
+
+            err = "Could not find BootTidal.hs! You can specify the path in your Troop boot config file: {}".format(BOOT_CONFIG_FILE)
+            raise(FileNotFoundError(err))
+
+        return
+
+    @classmethod
+    def setup(cls):
+        cls.keywords  = ["d{}".format(n) for n in range(1,17)] + ["\$", "#", "hush", "solo", "silence"]
+        cls.keyword_regex = compile_regex(cls.keywords)
+        return
 
     @classmethod
     def find_comment(cls, string):        
@@ -345,7 +455,8 @@ class TidalInterpreter(BuiltinInterpreter):
         """ Used to formant multiple lines in haskell """
         return ":{\n"+string+"\n:}\n"
 
-    def stop_sound(self):
+    @classmethod
+    def stop_sound(cls):
         """ Triggers the 'hush' command using Ctrl+. """
         return "hush"
 
@@ -397,9 +508,7 @@ class SuperColliderInterpreter(OSCInterpreter):
     filetype = ".scd"
     host = 'localhost'
     port = 57120
-
-    def __repr__(self):
-        return "SuperCollider"
+    name = "SuperCollider"
 
     def new_osc_message(self, string):
         """ Returns OSC message for Troop Quark """
@@ -424,7 +533,8 @@ class SuperColliderInterpreter(OSCInterpreter):
                     return [(i, len(string))]
         return []
 
-    def get_block_of_code(self, text, index):
+    @classmethod
+    def get_block_of_code(cls, text, index):
         """ Returns the start and end line numbers of the text to evaluate when pressing Ctrl+Return. """
 
         # Get start and end of the buffer
@@ -445,8 +555,8 @@ class SuperColliderInterpreter(OSCInterpreter):
 
         while True:
 
-            new_left_cur_y,  new_left_cur_x  = self.get_left_bracket(text, left_cur_y, left_cur_x)
-            new_right_cur_y, new_right_cur_x = self.get_right_bracket(text, right_cur_y, right_cur_x)
+            new_left_cur_y,  new_left_cur_x  = cls.get_left_bracket(text, left_cur_y, left_cur_x)
+            new_right_cur_y, new_right_cur_x = cls.get_right_bracket(text, right_cur_y, right_cur_x)
 
             if new_left_cur_y is None or new_right_cur_y is None:
 
@@ -461,7 +571,8 @@ class SuperColliderInterpreter(OSCInterpreter):
 
         return block
 
-    def get_left_bracket(self, text, cur_y, cur_x):
+    @classmethod
+    def get_left_bracket(cls, text, cur_y, cur_x):
         count = 0
         line_text = text.get("{}.{}".format(cur_y, 0), "{}.{}".format(cur_y, "end"))
         for line_num in range(cur_y, 0, -1):
@@ -486,7 +597,8 @@ class SuperColliderInterpreter(OSCInterpreter):
             cur_x     = len(line_text)
         return None, None
 
-    def get_right_bracket(self, text, cur_y, cur_x):
+    @classmethod
+    def get_right_bracket(cls, text, cur_y, cur_x):
         num_lines = int(text.index("end").split(".")[0]) + 1
         count = 0
         for line_num in range(cur_y, num_lines):
@@ -512,8 +624,8 @@ class SuperColliderInterpreter(OSCInterpreter):
         else:
             return None, None
 
-
-    def stop_sound(self):
+    @classmethod
+    def stop_sound(cls):
         return "s.freeAll"
 
 
@@ -521,9 +633,7 @@ class SonicPiInterpreter(OSCInterpreter):
     filetype = ".rb"
     host = 'localhost'
     port = 4557
-    
-    def __repr__(self):
-        return "Sonic-Pi"
+    name = "Sonic-Pi"
 
     def new_osc_message(self, string):
         """ Returns OSC message for Sonic Pi """
@@ -548,15 +658,18 @@ class SonicPiInterpreter(OSCInterpreter):
                   return [(i, len(string))]
         return []
 
-    def get_block_of_code(self, text, index):
+    @classmethod
+    def get_block_of_code(cls, text, index):
         """ Returns first and last line as Sonic Pi evaluates the whole code """
         start, end = "1.0", text.index("end")
         return [int(index.split(".")[0]) for index in (start, end)]
 
-    def stop_sound(self):
-        return 'osc_send({!r}, {}, "/stop-all-jobs")'.format(self.host, self.port)
+    @classmethod
+    def stop_sound(cls):
+        return 'osc_send({!r}, {}, "/stop-all-jobs")'.format(cls.host, cls.port)
 
         
+# Set up ID system
 
 langtypes = { FOXDOT        : FoxDotInterpreter,
               TIDAL         : TidalInterpreter,
@@ -564,3 +677,6 @@ langtypes = { FOXDOT        : FoxDotInterpreter,
               SUPERCOLLIDER : SuperColliderInterpreter,
               SONICPI       : SonicPiInterpreter,
               DUMMY         : DummyInterpreter }
+
+for lang_id, lang_cls in langtypes.items():
+    lang_cls.id = lang_id

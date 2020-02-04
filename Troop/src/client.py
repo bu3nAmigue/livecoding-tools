@@ -34,7 +34,7 @@ class Client:
         self.input = ConnectionInput(self, **kwargs)
         self.input.start()
 
-    def setup(self, host="", port="", name="", password="", lang=FOXDOT, args="", logging=False, ipv6=False):
+    def setup(self, host="", port="", name="", password="", lang=FOXDOT, syntax=FOXDOT, args="", logging=False, ipv6=False):
 
         # ConnectionInput(host, port)
         
@@ -66,7 +66,6 @@ class Client:
 
         # Quit with error output if we cannot connect
             
-        # except (ConnectionError, ConnectionRefusedError, AssertionError) as e:
         except Exception as e:
 
             self.input.print_message(e)
@@ -93,11 +92,23 @@ class Client:
 
             if lang in langtypes:
 
-                self.lang = langtypes[lang](self.args)
+                if lang >= 0:
+
+                    # Use a known interpreter
+
+                    self.lang = langtypes[lang](self, self.args)
+
+                else:
+
+                    # Use dummy interpreter  with specific syntax highlighting
+
+                    self.lang = langtypes[lang](self, self.args, syntax=getInterpreter(syntax))
 
             else:
 
-                self.lang = Interpreter(lang, self.args)
+                # Execute a program not known to Troop
+
+                self.lang = Interpreter(self, lang, self.args)
 
         except ExecutableNotFoundError as e:
 
@@ -117,7 +128,7 @@ class Client:
 
         # Send information about this client to the server
 
-        self.send( MSG_CONNECT(self.id, self.name, self.send.hostname, self.send.port) )
+        self.send( MSG_CONNECT(self.id, self.name, self.send.hostname, self.send.port, self.lang.id == -1) )
 
         # Give the recv / send a reference to the user-interface
         self.recv.ui = self.ui
@@ -163,6 +174,15 @@ class Client:
         self.ui.root.after(30, self.update_send)
         
         return
+
+    def is_master(self):
+        """ Returns True if this client has the lowest ID number and is not 
+            using a dummy interpreter """
+        for peer_id, peer in self.peers.items():
+            if not peer.is_dummy:
+                if peer_id < self.id:
+                    return False
+        return True
             
     def kill(self):
         """ Kills the connection sockets and UI correctly """
