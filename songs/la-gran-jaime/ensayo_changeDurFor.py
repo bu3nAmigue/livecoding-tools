@@ -1,4 +1,4 @@
-=======================================FoxDot=========================================
+#=======================================FoxDot=========================================
 
 Scale.default = Scale.minorPentatonic
 
@@ -20,20 +20,12 @@ def progressiveChange(change,times,intervalo,group=d_all):
     changeDurFor(change,intervalo*times,group)
     Clock.future(intervalo,lambda : progressiveChange(change,times-1,intervalo,group))
 
-Esa recursion JAJAJ
-
 progressiveChange(0.5,4,4)
 
 def changeDurFor(change, intervalo,group=d_all):
     changeDur(change,group=group)
     Clock.future(intervalo, lambda: changeDur(1/change,group=group))
     
-incremental la cosa?
-
-eso sigue laburando en el fondo
-tengo un loop jajaaj AH ES RECURSIVA
-
-
 
 
 changeDurFor(2,16,d_all)

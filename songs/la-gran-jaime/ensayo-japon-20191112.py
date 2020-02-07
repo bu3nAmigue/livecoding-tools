@@ -199,7 +199,7 @@ def abajo():
     d_all.solo()
 def arriba():
     d_all.lpf=0
-    d_all.solo(
+    d_all.solo()
 abajo()
 Clock.future(4, lambda: arriba())
 
