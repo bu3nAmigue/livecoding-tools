@@ -46,20 +46,15 @@ def yt_grab(term,number,name='youtube_last'):
     
 # SEARCH
 
-youtube_search('livecoding')
+youtube_search('a la grande le puse cuca')
 
 """
->>youtube_search('livecoding')
-Video 0: George Hotz | Programming | Livecoding SLAM | twitchslam | Part1
-Video 1: Joel Grus - Livecoding Madness - Let's Build a Deep Learning Library
-Video 2: Sam Aaron live coding an ambient electro set w/ Sonic Pi
-Video 3: 12 Hour Coding Livestream - Creating an Online Game with Python
-Video 4: Live-Coding – programming masterly music  | Juan Romero & Patrick Borgeat | TEDxKIT
-Video 5: DOMMUNE Tokyo - live coding performances - algorave tokyo x yorkshire
-Video 6: Live Stream: TidalCycles Livecoding Improv
-Video 7: George Hotz | Programming | twitchchess | a simple neural chess AI | Part1
-Video 8: Live Coding with AWS: Dockerizing a Web App - Part 1
-Video 9: Taller de LiveCoding
+>>youtube_search('a la grande le puse cuca')
+Video 0: A la grande le puse cuca- Los Simpsons latino
+Video 1: A la grande le puse cuca [Los Simpson - Latino]
+Video 2: los simpson-a la grande le puse cuca(parte 1 y 2)
+Video 3: A La Grande Le Puse Cuca - Los Simpson Latino
+Video 4: Marge contra el Monorriel (Parte 1/5) Los Simpson
 """
 
 youtube_getlink('livecoding',0)
@@ -69,8 +64,8 @@ youtube_getlink('livecoding',0)
 https://youtube.com/watch?v=7Hlb8YX2-W8
 """
 
-yt_grab('livecoding',0,name='livecoding_sample')
+yt_grab('a la grande le puse cuca',0,name='grande_cuca')
 #Starts a thread to download the sample. It saves it in the _loop_ folder so that it can be used ASAP.
-p1 >> loop('livecoding_sample',P[:50])
+p1 >> loop('grande_cuca',P[:50])
 
 
