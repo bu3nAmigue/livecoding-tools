@@ -48,7 +48,8 @@ def yt_grab(term,number,name='youtube_last'):
 
 youtube_search('livecoding')
 
-/*
+"""
+>>youtube_search('livecoding')
 Video 0: George Hotz | Programming | Livecoding SLAM | twitchslam | Part1
 Video 1: Joel Grus - Livecoding Madness - Let's Build a Deep Learning Library
 Video 2: Sam Aaron live coding an ambient electro set w/ Sonic Pi
@@ -59,4 +60,17 @@ Video 6: Live Stream: TidalCycles Livecoding Improv
 Video 7: George Hotz | Programming | twitchchess | a simple neural chess AI | Part1
 Video 8: Live Coding with AWS: Dockerizing a Web App - Part 1
 Video 9: Taller de LiveCoding
-*/
+"""
+
+youtube_getlink('livecoding',0)
+
+"""
+>>youtube_getlink('livecoding',0)
+https://youtube.com/watch?v=7Hlb8YX2-W8
+"""
+
+yt_grab('livecoding',0,name='livecoding_sample')
+#Starts a thread to download the sample. It saves it in the _loop_ folder so that it can be used ASAP.
+p1 >> loop('livecoding_sample',P[:50])
+
+
